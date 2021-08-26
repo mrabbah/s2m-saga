@@ -1,0 +1,19 @@
+{
+  "namespace": "ma.net.s2m.kafka.template.example.dto",
+  "type": "record",
+  "name": "TransactionRequest",
+  "doc": "Dummy transaction request information which used to describe basic transaction data",
+  "fields": [
+    {
+      "name": "amount",
+      "type": "double",
+      "doc": "Transaction amount"
+    },
+    {
+      "name": "origin",
+      "type": "string",
+      "avro.java.string": "String",
+      "doc": "Transaction Origin"
+    }
+  ]
+}

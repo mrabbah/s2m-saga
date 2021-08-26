@@ -1,0 +1,76 @@
+server: 
+    port: 9999
+spring:
+    application:
+        name: saga-orchestrator
+    autoconfigure:
+        exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+    jackson:
+        serialization:
+            FAIL_ON_EMPTY_BEANS: false
+    kafka:
+        bootstrap-servers: localhost:9092
+        #${BOOTSTRAP_SERVERS_URL:ac733a94fb0dd4ce6bef55247130e47e-b3678a3184db5822.elb.us-east-2.amazonaws.com:9094}
+        properties:
+            request.timeout.ms: 20000
+            retry.backoff.ms: 500
+            #schema.registry.url: http://${SHEMA_REGISTRY_ENDPOINT:ac97165a8a33c41dca0acabfc5898879-1191876181.us-east-2.elb.amazonaws.com:8081}
+            schema.registry.url: http://localhost:8081
+            #basic.auth.credentials.source: USER_INFO
+            schema.registry.basic.auth.user.info: ${USER_INFO:#{null}}
+        producer:
+            #key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            #value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+            acks: ${PRODUCER_ACKS:1}
+            #interceptor:
+            #    classes: io.opentracing.contrib.kafka.TracingProducerInterceptor
+        consumer:
+            group-id: saga-orchestrator
+            auto-offset-reset: ${AUTO_OFFSET_RESET:latest}
+            enable-auto-commit: ${ENABLE_AUTO_COMMIT:false}
+            client-rack: ${CLIENT_RACK:#{null}}
+            #key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            #value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+            #interceptor:
+            #    classes: io.opentracing.contrib.kafka.TracingConsumerInterceptor
+        #template:
+        #    default-topic:
+        ssl:
+            #protocol: ${SSL_PROTOCOL:#{null}}
+            trust-store-location: ${TRUSTSTORE_PATH:#{null}}
+            trust-store-password: ${TRUSTSTORE_PASSWORD:#{null}}
+            #trust-store-type: ${TRUSTSTORE_TYPE:#{null}}
+            key-store-location: ${KEYSTORE_PATH:#{null}}
+            key-store-password: ${KEYSTORE_PASSWORD:#{null}}
+            #key-store-type: ${KEYSTORE_TYPE:#{null}}
+kafka:
+    additionalconfig: ${ADDITIONAL_CONFIG:#{null}}
+    topic:
+        transaction:
+            partitions-num: 1
+            replication-factor: 1
+            request: 
+                name: transactions.request
+            reply: 
+                name: transactions.reply
+                partition: ${TRANSACTION_PARTITION_NUMBER:#{null}}
+                
+    request-reply:
+        timeout-ms: 1000
+logging:
+    level:
+        root: info
+jeager:
+    servicename: ${JAEGER_SERVICE_NAME:#{null}}
+    #agenthost: ${JAEGER_AGENT_HOST:#{null}}
+    #samplertype: ${JAEGER_SAMPLER_TYPE:#{null}}
+    #samplerparam: ${JAEGER_SAMPLER_PARAM:#{null}}
+    
+management:
+    endpoints:
+        web:
+            exposure:
+                include: all
+        health:
+            show-details: always
+            
