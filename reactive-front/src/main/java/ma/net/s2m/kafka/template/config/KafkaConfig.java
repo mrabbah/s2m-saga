@@ -7,14 +7,12 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.kafka.TracingConsumerInterceptor;
 import io.opentracing.contrib.kafka.TracingProducerInterceptor;
 import io.opentracing.util.GlobalTracer;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import ma.net.s2m.kafka.template.example.dto.TransactionRequest;
 import ma.net.s2m.kafka.template.example.dto.TransactionResponse;
 
-import ma.net.s2m.kafka.template.commun.avro.TopicAvroDeserializer;
 import ma.net.s2m.kafka.template.commun.kafkareqrep.CompletableFutureReplyingKafkaOperations;
 import ma.net.s2m.kafka.template.commun.kafkareqrep.CompletableFutureReplyingKafkaTemplate;
 
@@ -33,7 +31,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
-import org.springframework.kafka.support.TopicPartitionOffset;
+import org.springframework.kafka.support.TopicPartitionInitialOffset;
 
 /**
  *
@@ -75,8 +73,6 @@ public class KafkaConfig {
     private String autoOffsetReset; //"earliest" or //latest
     @Value("${spring.kafka.consumer.enable-auto-commit}")
     private String enableAutoCommit;
-    @Value("${spring.kafka.consumer.client-rack}")
-    private String clientRack;
     
     @Value("${spring.kafka.properties.schema.registry.url}")
     private String schemaRegistryEndPoint;
@@ -91,9 +87,6 @@ public class KafkaConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
 
-        if (clientRack != null) {
-            props.put(ConsumerConfig.CLIENT_RACK_CONFIG, clientRack);
-        }
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableAutoCommit);
         // Tracing distribuer en utilisant Jeager
@@ -143,15 +136,15 @@ public class KafkaConfig {
         }
         return props;
     }
-
-    @Bean("avroRequestReplyKafkaTemplate")
-    public CompletableFutureReplyingKafkaOperations<String, TransactionRequest, TransactionResponse> avroRequestReplyKafkaTemplate() {
+    
+    @Bean
+    public CompletableFutureReplyingKafkaOperations<String, TransactionRequest, TransactionResponse> replyKafkaTemplate() {
         CompletableFutureReplyingKafkaTemplate<String, TransactionRequest, TransactionResponse> requestReplyKafkaTemplate
                 = new CompletableFutureReplyingKafkaTemplate<>(requestProducerFactory(),
                         replyListenerContainer());
         requestReplyKafkaTemplate.setDefaultTopic(requestTopic);
-        requestReplyKafkaTemplate.setDefaultReplyTimeout(Duration.ofMillis(replyTimeout));
-
+        requestReplyKafkaTemplate.setReplyTimeout(replyTimeout);
+        
         return requestReplyKafkaTemplate;
     }
 
@@ -168,18 +161,20 @@ public class KafkaConfig {
     @Bean
     public KafkaMessageListenerContainer<String, TransactionResponse> replyListenerContainer() {
 
+        ContainerProperties containerProperties = new ContainerProperties(replyTopic);
+        
         if (replyPartition == null) {
             log.info("Using only topic: " + replyTopic + " to receive response");
-            ContainerProperties containerProperties = new ContainerProperties(replyTopic);
+            
             return new KafkaMessageListenerContainer<>(replyConsumerFactory(), containerProperties);
         } else {
-            if (replyPartition > totalPartitions) {
+            if (replyPartition > totalPartitions - 1) {
                 throw new KafkaException("Reply partition number must be below number of total partitions created for the topic: " + replyTopic);
             }
             log.info("Using Reply Topic: " + replyTopic + " and Partition : " + replyPartition + " to receive response");
-            TopicPartitionOffset topicPartitionOffset = new TopicPartitionOffset(replyTopic, replyPartition);
-            ContainerProperties containerProperties = new ContainerProperties(topicPartitionOffset);
-            return new KafkaMessageListenerContainer<>(replyConsumerFactory(), containerProperties);
+            TopicPartitionInitialOffset topicPartitionOffset = new TopicPartitionInitialOffset(replyTopic, replyPartition);
+            
+            return new KafkaMessageListenerContainer<>(replyConsumerFactory(), containerProperties, topicPartitionOffset);
         }
 
     }

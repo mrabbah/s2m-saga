@@ -19,7 +19,8 @@ import reactor.core.publisher.Mono;
 public class TransactionService {
 
     @Autowired
-    private CompletableFutureReplyingKafkaOperations<String, TransactionRequest, TransactionResponse> avroRequestReplyKafkaTemplate;
+    private CompletableFutureReplyingKafkaOperations<String, TransactionRequest, TransactionResponse> 
+            requestReplyKafkaTemplate;
 
     @Value("${kafka.topic.transaction.request.name}")
     private String requestTopic;
@@ -36,7 +37,7 @@ public class TransactionService {
     }
 
     public CompletableFuture<TransactionResponse> initAsync(TransactionRequest request) {
-        return avroRequestReplyKafkaTemplate.requestReply(requestTopic, request);
+        return requestReplyKafkaTemplate.requestReply(requestTopic, request);
     }
 
     public Mono<TransactionResponse> init(String origin, Double amount) {

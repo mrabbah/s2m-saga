@@ -13,10 +13,8 @@ import ma.net.s2m.kafka.template.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.kafka.requestreply.KafkaReplyTimeoutException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,9 +48,9 @@ public class TransactionController {
         // return Mono.justOrEmpty(tx);
         try {
             return transactionService.init(origin, amount);
-        } catch (KafkaReplyTimeoutException ex) {
+        } /*catch (KafkaReplyTimeoutException ex) {
             return Mono.error(new IllegalArgumentException());
-        } catch(Exception ex) {
+        }*/ catch(Exception ex) {
             return Mono.error(ex);
         }
 
