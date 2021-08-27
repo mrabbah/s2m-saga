@@ -1,9 +1,9 @@
 package ma.net.s2m.kafka.template.commun.kafkareqrep;
 
 import ma.net.s2m.kafka.template.commun.ByteUtils;
-// import org.apache.kafka.clients.producer.ProducerRecord;
-// import org.apache.kafka.common.TopicPartition;
-// import org.apache.kafka.common.header.internals.RecordHeader;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.header.internals.RecordHeader;
 import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.GenericMessageListenerContainer;
@@ -20,7 +20,7 @@ import org.springframework.lang.Nullable;
  * method with simplified parameters, and adding corresponding overloaded methods which
  * use a configured default topic):
  */
-public class PartitionAwareReplyingKafkaTemplate<K, V, R> { /* extends ReplyingKafkaTemplate<K, V, R> implements PartitionAwareReplyingKafkaOperations<K, V, R> {
+public class PartitionAwareReplyingKafkaTemplate<K, V, R> extends ReplyingKafkaTemplate<K, V, R> implements PartitionAwareReplyingKafkaOperations<K, V, R> {
 
   public PartitionAwareReplyingKafkaTemplate(ProducerFactory<K, V> producerFactory,
       GenericMessageListenerContainer<K, R> replyContainer) {
@@ -98,5 +98,5 @@ public class PartitionAwareReplyingKafkaTemplate<K, V, R> { /* extends ReplyingK
             ByteUtils.intToBytesBigEndian(replyPartition.partition())));
     return super.sendAndReceive(record);
   }
-*/
+
 }

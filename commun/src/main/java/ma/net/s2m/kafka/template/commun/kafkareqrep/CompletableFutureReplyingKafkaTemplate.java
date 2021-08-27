@@ -2,7 +2,7 @@ package ma.net.s2m.kafka.template.commun.kafkareqrep;
 
 import java.util.concurrent.CompletableFuture;
 
-//import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.GenericMessageListenerContainer;
 import org.springframework.kafka.requestreply.RequestReplyFuture;
@@ -12,7 +12,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 /**
  * Specialization of the ReplyingKafkaTemplate to adapt the return type to CompletableFuture.
  */
-public class CompletableFutureReplyingKafkaTemplate<K, V, R> {/*extends PartitionAwareReplyingKafkaTemplate<K, V, R>
+public class CompletableFutureReplyingKafkaTemplate<K, V, R> extends PartitionAwareReplyingKafkaTemplate<K, V, R>
     implements CompletableFutureReplyingKafkaOperations<K, V, R> {
 
   public CompletableFutureReplyingKafkaTemplate(ProducerFactory<K, V> producerFactory,
@@ -93,5 +93,5 @@ public class CompletableFutureReplyingKafkaTemplate<K, V, R> {/*extends Partitio
     });
     return completableResult;
   }
-*/
+
 }
