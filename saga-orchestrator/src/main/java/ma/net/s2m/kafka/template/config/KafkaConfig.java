@@ -1,23 +1,17 @@
 package ma.net.s2m.kafka.template.config;
 
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
-import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.kafka.TracingConsumerInterceptor;
 import io.opentracing.contrib.kafka.TracingProducerInterceptor;
 import io.opentracing.util.GlobalTracer;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import ma.net.s2m.kafka.template.example.dto.TransactionRequest;
 import ma.net.s2m.kafka.template.example.dto.TransactionResponse;
-
-import ma.net.s2m.kafka.template.commun.avro.TopicAvroDeserializer;
-// import ma.net.s2m.kafka.template.commun.kafkareqrep.CompletableFutureReplyingKafkaOperations;
-// import ma.net.s2m.kafka.template.commun.kafkareqrep.CompletableFutureReplyingKafkaTemplate;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -26,7 +20,6 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-// import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerContainerFactory;
@@ -36,9 +29,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
-// import org.springframework.kafka.listener.ContainerProperties;
-// import org.springframework.kafka.listener.KafkaMessageListenerContainer;
-// import org.springframework.kafka.support.TopicPartitionOffset;
 
 /**
  *
@@ -79,8 +69,6 @@ public class KafkaConfig {
     private String autoOffsetReset; //"earliest" or //latest
     @Value("${spring.kafka.consumer.enable-auto-commit}")
     private String enableAutoCommit;
-    @Value("${spring.kafka.consumer.client-rack}")
-    private String clientRack;
     
     @Value("${spring.kafka.properties.schema.registry.url}")
     private String schemaRegistryEndPoint;
@@ -89,16 +77,13 @@ public class KafkaConfig {
 
     @Bean
     public Map<String, Object> consumerConfigs() {
+        log.info("Consumer config bean creation...");
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-        // props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
-        if (clientRack != null) {
-            props.put(ConsumerConfig.CLIENT_RACK_CONFIG, clientRack);
-        }
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableAutoCommit);
         // Tracing distribuer en utilisant Jeager
@@ -107,6 +92,7 @@ public class KafkaConfig {
             GlobalTracer.registerIfAbsent(tracer);
             props.put(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG, TracingConsumerInterceptor.class.getName());
         }
+   
         if (schemaRegistryEndPoint != null) {
             props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
                     schemaRegistryEndPoint);
@@ -117,11 +103,13 @@ public class KafkaConfig {
             }
 
         }
+        
         return props;
     }
 
     @Bean
     public Map<String, Object> producerConfigs() {
+        log.info("Producer config bean creation...");
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -131,9 +119,9 @@ public class KafkaConfig {
         if (jeagerServiceName != null) {
             Tracer tracer = io.jaegertracing.Configuration.fromEnv().getTracer();
             GlobalTracer.registerIfAbsent(tracer);
-
             props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, TracingProducerInterceptor.class.getName());
         }
+        
         if (schemaRegistryEndPoint != null) {
             props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
                     schemaRegistryEndPoint);
@@ -142,6 +130,7 @@ public class KafkaConfig {
                 props.put(KafkaAvroSerializerConfig.USER_INFO_CONFIG,
                         schemaregistryUserInfo);
             }
+
         }
         return props;
     }
@@ -163,10 +152,11 @@ public class KafkaConfig {
   }*/
     @Bean
     public ConsumerFactory<String, TransactionRequest> requestConsumerFactory() {
+        log.info("Request Consumer Factory bean creation...");
         return new DefaultKafkaConsumerFactory<>(consumerConfigs());
     }
 
-    @Bean("avroRequestReplyListenerContainerFactory")
+    @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, TransactionRequest>> requestReplyListenerContainerFactory() {
         log.info("Initializing of request reply listener container");
         ConcurrentKafkaListenerContainerFactory<String, TransactionRequest> factory
@@ -178,11 +168,13 @@ public class KafkaConfig {
 
     @Bean
     public ProducerFactory<String, TransactionResponse> replyProducerFactory() {
+        log.info("Reply Producer bean creation...");
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
     public KafkaTemplate<String, TransactionResponse> replyTemplate() {
+        log.info("Reply Template bean creation...");
         return new KafkaTemplate<>(replyProducerFactory());
     }
     /* @Bean

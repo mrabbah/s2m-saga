@@ -17,7 +17,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 @Slf4j
 public class SagaOrchestratorService {
 
-    @KafkaListener(topics = "${kafka.topic.transaction.request.name}", containerFactory = "avroRequestReplyListenerContainerFactory")
+    @KafkaListener(topics = "${kafka.topic.transaction.request.name}", containerFactory = "requestReplyListenerContainerFactory")
     @SendTo()
     public TransactionResponse receive(TransactionRequest request) {
         log.info("received request for Transaction: " + request.toString());

@@ -1,6 +1,5 @@
 package ma.net.s2m.kafka.template.config;
 
-import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -8,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -99,5 +97,5 @@ public class KafkaAdminConfig {
 
         return new KafkaAdmin(configs);
     }
-
+    
 }
