@@ -28,7 +28,7 @@ spring:
             group-id: reactive-front
             auto-offset-reset: ${AUTO_OFFSET_RESET:latest}
             enable-auto-commit: ${ENABLE_AUTO_COMMIT:false}
-            client-rack: ${CLIENT_RACK:#{null}}
+            #client-rack: ${CLIENT_RACK:#{null}}
             #key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
             #value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
             #interceptor:
