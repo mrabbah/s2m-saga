@@ -1,14 +1,9 @@
 {
   "namespace": "ma.net.s2m.kafka.template.example.dto",
   "type": "record",
-  "name": "Fee",
-  "doc": "Dummy Fee information which used to describe basic fee data",
+  "name": "FeeRequest",
+  "doc": "Dummy Fee Request information which used to describe basic fee data",
   "fields": [
-    {
-      "name": "id",
-      "type": "long",
-      "doc": "Fee identifier"
-    },
     {
       "name": "transaction_uuid",
       "type": "string",

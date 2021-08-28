@@ -5,6 +5,13 @@
   "doc": "Dummy transaction request information which used to describe basic transaction data",
   "fields": [
     {
+      "name": "uuid",
+      "type": "string",
+      "logicalType" : "uuid",
+      "avro.java.string": "String",
+      "doc": "Transaction UUID"
+    },
+    {
       "name": "amount",
       "type": "double",
       "doc": "Transaction amount"

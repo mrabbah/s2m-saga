@@ -1,0 +1,25 @@
+{
+  "namespace": "ma.net.s2m.kafka.template.example.dto",
+  "type": "record",
+  "name": "FeeResponse",
+  "doc": "Dummy Fee Response information which used to describe basic fee data",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long",
+      "doc": "Fee identifier"
+    },
+    {
+      "name": "transaction_uuid",
+      "type": "string",
+      "logicalType" : "uuid",
+      "avro.java.string": "String",
+      "doc": "Original Transaction UUID"
+    },
+    {
+      "name": "fees",
+      "type": "double",
+      "doc": "Fees amount"
+    }
+  ]
+}
