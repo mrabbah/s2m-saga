@@ -9,15 +9,14 @@
         <relativePath/> 
     </parent>
     <groupId>ma.net.s2m.kafka.template</groupId>
-    <artifactId>reactive-front</artifactId>
+    <artifactId>transaction-microservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>reactive-front</name>
-    <description>Reactive Microservice Template Using Kafka</description>
+    <name>transaction-microservice</name>
+    <description>Transaction Microservice Template For Kafka</description>
     <properties>
         <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <springfox.version>2.9.2</springfox.version>
     </properties>
     <dependencies>   
         <dependency>
@@ -30,11 +29,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>          
+        </dependency>    
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -49,16 +44,6 @@
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox.version}</version>
         </dependency>
     </dependencies>
 
@@ -88,5 +73,5 @@
             </plugin>
         </plugins>
     </build>
-
+    
 </project>

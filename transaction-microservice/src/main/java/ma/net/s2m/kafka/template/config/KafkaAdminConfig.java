@@ -1,6 +1,5 @@
 package ma.net.s2m.kafka.template.config;
 
-import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -8,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,12 +22,6 @@ public class KafkaAdminConfig {
 
     @Value("${kafka.topic.transaction.reply.name}")
     private String replyTransactionTopicName;
-    
-    @Value("${kafka.topic.transaction.completed.name}")
-    private String completedTransactionTopicName;
-    
-    @Value("${kafka.topic.transaction.failed.name}")
-    private String failedTransactionTopicName;
 
     @Value("${kafka.topic.transaction.partitions-num}")
     private Integer topicsPartitions;
@@ -37,11 +29,11 @@ public class KafkaAdminConfig {
     @Value("${kafka.topic.transaction.replication-factor}")
     private short replicationFactor;
 
-    @Value("${kafka.request-reply.timeout-ms}")
-    private Long replyTimeout;
-
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
+
+    @Value("${kafka.request-reply.timeout-ms}")
+    private Long replyTimeout;
 
     @Value("${spring.kafka.ssl.trust-store-password}")
     private String trustuedStorePassword;
@@ -53,30 +45,19 @@ public class KafkaAdminConfig {
     private String keystorePath;
     @Value("${kafka.additionalconfig}")
     private String additionalConfig;
-
-
+    
     @Bean
     NewTopic requestTransactionsTopic() {
         return new NewTopic(requestTransactionTopicName, topicsPartitions, replicationFactor);
     }
 
-    @Bean
+    /*@Bean
     NewTopic replyTransactionsTopic() {
         Map<String, String> configs = new HashMap<>();
-        configs.put("retention.ms", replyTimeout.toString());
+        // configs.put("retention.ms", replyTimeout.toString());
         return new NewTopic(replyTransactionTopicName, topicsPartitions, replicationFactor).configs(configs);
-    }
+    }*/
 
-    @Bean
-    NewTopic completedTransactionsTopic() {
-        return new NewTopic(completedTransactionTopicName, topicsPartitions, replicationFactor);
-    }
-    
-    @Bean
-    NewTopic failedTransactionsTopic() {
-        return new NewTopic(failedTransactionTopicName, topicsPartitions, replicationFactor);
-    }
-    
     @Bean
     public KafkaAdmin admin() {
         Map<String, Object> configs = new HashMap<>();
@@ -116,5 +97,5 @@ public class KafkaAdminConfig {
 
         return new KafkaAdmin(configs);
     }
-
+    
 }
