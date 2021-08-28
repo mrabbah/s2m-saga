@@ -11,14 +11,15 @@ import ma.net.s2m.kafka.template.example.dto.TransactionResponse;
 import ma.net.s2m.kafka.template.service.TransactionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 /**
  *
@@ -38,20 +39,35 @@ public class TransactionController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, response = TransactionResponse.class, message = "Successful operation")})
     @GetMapping(value = "/proceed", produces = AVRO_JSON)
-    public TransactionResponse proceed(@RequestParam("uuid") String uuid, @RequestParam("origin") String origin, @RequestParam("amount") Double amount) {
+    public ResponseEntity<TransactionResponse> proceed(@RequestParam("uuid") String uuid, @RequestParam("origin") String origin, @RequestParam("amount") Double amount) {
         log.info("Params > uuid: " + uuid + " origin: " + origin + " amount: " + amount.toString());
         TransactionRequest request = new TransactionRequest(uuid, amount, origin);
-        return transactionService.proceed(request);
+        try {
+            return ResponseEntity.ok(transactionService.proceed(request));
+        } catch (Exception ex) {
+            log.error("Transaction: " + request.toString() + " failed, detail: " + ex.getMessage());
+            return new ResponseEntity<>(
+                    null,
+                    HttpStatus.GATEWAY_TIMEOUT);
+        }
+
     }
 
     @ApiOperation(produces = AVRO_JSON, consumes = MediaType.APPLICATION_JSON_VALUE, value = "handle transaction", httpMethod = "PUT", notes = "<br>This service handle transaction", response = TransactionResponse.class)
     @ApiResponses(value = {
         @ApiResponse(code = 200, response = TransactionResponse.class, message = "Successful operation")})
     @PutMapping(value = "/handel", produces = AVRO_JSON, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public TransactionResponse handel(@RequestBody final TransactionRequest request) {
+    public ResponseEntity<TransactionResponse> handel(@RequestBody final TransactionRequest request) {
         log.info("Transaction request : " + request.toString());
-        
-        return transactionService.proceed(request);
+
+        try {
+            return ResponseEntity.ok(transactionService.proceed(request));
+        } catch (Exception ex) {
+            log.error("Transaction: " + request.toString() + " failed, detail: " + ex.getMessage());
+            return new ResponseEntity<>(
+                    null,
+                    HttpStatus.GATEWAY_TIMEOUT);
+        }
     }
 
 }
