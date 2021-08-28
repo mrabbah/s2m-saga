@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.concurrent.CompletableFuture;
 import ma.net.s2m.kafka.template.commun.kafkareqrep.CompletableFutureReplyingKafkaOperations;
+import ma.net.s2m.kafka.template.commun.saga.ChoreographyService;
 import ma.net.s2m.kafka.template.example.dto.TransactionRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.KafkaException;
@@ -20,7 +21,7 @@ import reactor.core.publisher.Mono;
  */
 @Service
 @Slf4j
-public class TransactionService {
+public class ReactiveFrontService implements ChoreographyService<TransactionRequest, TransactionResponse> {
 
     @Autowired
     private CompletableFutureReplyingKafkaOperations<String, TransactionRequest, TransactionResponse> requestReplyKafkaTemplate;
@@ -40,6 +41,7 @@ public class TransactionService {
     @Value("${kafka.request-reply.timeout-ms}")
     private Long replyTimeout;
 
+    @Override
     public TransactionResponse proceed(TransactionRequest request) {
         try {
             Mono<TransactionResponse> response = this.requestReply(request);
@@ -61,7 +63,8 @@ public class TransactionService {
         }
     }
 
-    private boolean completed(TransactionRequest request) {
+    @Override
+    public boolean completed(TransactionRequest request) {
         try {
             producerTemplate.send(completedTopic, request);
             return true;
@@ -72,7 +75,8 @@ public class TransactionService {
         
     }
 
-    private boolean failed(TransactionRequest request) {
+    @Override
+    public boolean failed(TransactionRequest request) {
         try {
             producerTemplate.send(failedTopic, request);
             return true;
