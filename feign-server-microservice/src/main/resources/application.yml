@@ -2,7 +2,7 @@ server:
     port: 9111
 spring:
     application:
-        name: saga-orchestrator
+        name: feign-server-avro
     jackson:
         serialization:
             FAIL_ON_EMPTY_BEANS: false
@@ -11,11 +11,11 @@ logging:
     level:
         root: info
     
-management:
-    endpoints:
-        web:
-            exposure:
-                include: all
-        health:
-            show-details: always
+#management:
+#    endpoints:
+#        web:
+#            exposure:
+#                include: all
+#        health:
+#            show-details: always
             

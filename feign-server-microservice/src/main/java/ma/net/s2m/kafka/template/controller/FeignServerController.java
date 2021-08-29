@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import ma.net.s2m.kafka.template.example.dto.FeeResponse;
 import ma.net.s2m.kafka.template.example.dto.TransactionRequest;
 import ma.net.s2m.kafka.template.example.dto.TransactionResponse;
 
@@ -28,29 +29,26 @@ import reactor.core.publisher.Mono;
  */
 @Slf4j
 @RestController
-@RequestMapping("/feignavroserver")
+@RequestMapping("/api")
 @Api(value = "Feign Avro EndPoints",
         tags = "Feign Avro controller")
 public class FeignServerController {
 
-    @ApiOperation(produces = AVRO_JSON, consumes = MediaType.APPLICATION_JSON_VALUE, value = "handle transaction", httpMethod = "PUT", notes = "<br>This service handle transaction", response = TransactionResponse.class)
+    @ApiOperation(produces = AVRO_JSON, consumes = AVRO_JSON, value = "Currency convertion", httpMethod = "PUT", notes = "<br>This service convert currency from MAD to USD", response = FeeResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, response = TransactionResponse.class, message = "Successful operation")})
-    @PutMapping(value = "/handel", produces = AVRO_JSON, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<TransactionResponse> handel(@RequestBody final TransactionRequest transaction) {
-        log.info("transaction input : " + transaction.toString());
-        try {
-            return Mono.empty();
-        } /*catch (KafkaReplyTimeoutException ex) {
-            return Mono.error(new IllegalArgumentException());
-        }*/ catch(Exception ex) {
-            return Mono.error(ex);
-        }
+        @ApiResponse(code = 200, response = FeeResponse.class, message = "Successful operation")})
+    @PutMapping(value = "/convert", produces = AVRO_JSON, consumes = AVRO_JSON)
+    public Mono<FeeResponse> handel(@RequestBody final FeeResponse fees) {
+        
+        log.info("Fees input : " + fees.toString());
+        
+        FeeResponse response = FeeResponse.newBuilder()
+                .setId(fees.getId())
+                .setTransactionUuid(fees.getTransactionUuid())
+                .setFees(fees.getFees() / 8.9).build();
+        
+        return Mono.just(response);
+        
     }
 
-    @ResponseStatus(
-            value = HttpStatus.GATEWAY_TIMEOUT,
-            reason = "Request take too mutch time")
-    @ExceptionHandler(IllegalArgumentException.class)
-    public void illegalArgumentHandler() {}
 }

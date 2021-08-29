@@ -61,8 +61,8 @@ public class SpringWebConfig implements WebMvcConfigurer {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfo("Reactive Front API",
-                "Reactive Front API",
+        return new ApiInfo("Feign Avro Server API",
+                "Feign Avro Server API",
                 "1.0",
                 "Terms of service",
                 new springfox.documentation.service.Contact("RABBAH", "", "mrabbah@omnidata.ma"),
