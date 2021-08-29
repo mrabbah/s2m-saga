@@ -17,16 +17,22 @@ import org.springframework.kafka.core.KafkaAdmin;
 @Configuration
 public class KafkaAdminConfig {
 
-    @Value("${kafka.topic.transaction.request.name}")
-    private String requestTransactionTopicName;
+    @Value("${kafka.topic.fees.request.name}")
+    private String requestFeesTopicName;
 
-    @Value("${kafka.topic.transaction.reply.name}")
-    private String replyTransactionTopicName;
+    @Value("${kafka.topic.fees.reply.name}")
+    private String replyFeesTopicName;
+    
+    @Value("${kafka.topic.fees.completed.name}")
+    private String completedFeesTopicName;
+    
+    @Value("${kafka.topic.fees.failed.name}")
+    private String failedFeesTopicName;
 
-    @Value("${kafka.topic.transaction.partitions-num}")
+    @Value("${kafka.topic.fees.partitions-num}")
     private Integer topicsPartitions;
 
-    @Value("${kafka.topic.transaction.replication-factor}")
+    @Value("${kafka.topic.fees.replication-factor}")
     private short replicationFactor;
 
     @Value("${spring.kafka.bootstrap-servers}")
@@ -47,16 +53,19 @@ public class KafkaAdminConfig {
     private String additionalConfig;
     
     @Bean
-    NewTopic requestTransactionsTopic() {
-        return new NewTopic(requestTransactionTopicName, topicsPartitions, replicationFactor);
+    NewTopic requestFeesTopic() {
+        return new NewTopic(requestFeesTopicName, topicsPartitions, replicationFactor);
     }
 
-    /*@Bean
-    NewTopic replyTransactionsTopic() {
-        Map<String, String> configs = new HashMap<>();
-        // configs.put("retention.ms", replyTimeout.toString());
-        return new NewTopic(replyTransactionTopicName, topicsPartitions, replicationFactor).configs(configs);
-    }*/
+    @Bean
+    NewTopic completedFeesTopic() {
+        return new NewTopic(completedFeesTopicName, topicsPartitions, replicationFactor);
+    }
+    
+    @Bean
+    NewTopic failedFeesTopic() {
+        return new NewTopic(failedFeesTopicName, topicsPartitions, replicationFactor);
+    }
 
     @Bean
     public KafkaAdmin admin() {

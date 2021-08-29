@@ -9,7 +9,6 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.kafka.TracingConsumerInterceptor;
 import io.opentracing.contrib.kafka.TracingProducerInterceptor;
 import io.opentracing.util.GlobalTracer;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
