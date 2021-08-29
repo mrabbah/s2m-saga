@@ -12,7 +12,7 @@ spring:
         bootstrap-servers: localhost:9092
         #${BOOTSTRAP_SERVERS_URL:ac733a94fb0dd4ce6bef55247130e47e-b3678a3184db5822.elb.us-east-2.amazonaws.com:9094}
         properties:
-            request.timeout.ms: 20000
+            request.timeout.ms: 5000
             retry.backoff.ms: 500
             #schema.registry.url: http://${SHEMA_REGISTRY_ENDPOINT:ac97165a8a33c41dca0acabfc5898879-1191876181.us-east-2.elb.amazonaws.com:8081}
             schema.registry.url: http://localhost:8081
@@ -47,16 +47,32 @@ kafka:
     additionalconfig: ${ADDITIONAL_CONFIG:#{null}}
     topic:
         transaction:
-            partitions-num: 2
+            partitions-num: 1
             replication-factor: 1
             request: 
-                name: transactions.request
+                name: tx.request
             reply: 
-                name: transactions.reply
+                name: tx.reply
                 partition: ${TRANSACTION_PARTITION_NUMBER:#{null}}
+            completed:
+                name: tx.completed
+            failed:
+                name: tx.failed
+        fees:
+            partitions-num: 1
+            replication-factor: 1
+            request: 
+                name: fees.request
+            reply: 
+                name: fees.reply
+                partition: ${TRANSACTION_PARTITION_NUMBER:#{null}}
+            completed:
+                name: fees.completed
+            failed:
+                name: fees.failed
                 
     request-reply:
-        timeout-ms: 1000
+        timeout-ms: 5000
 logging:
     level:
         root: info
@@ -66,11 +82,11 @@ jeager:
     #samplertype: ${JAEGER_SAMPLER_TYPE:#{null}}
     #samplerparam: ${JAEGER_SAMPLER_PARAM:#{null}}
     
-management:
-    endpoints:
-        web:
-            exposure:
-                include: all
-        health:
-            show-details: always
+#management:
+#    endpoints:
+#        web:
+#            exposure:
+#                include: all
+#        health:
+#            show-details: always
             

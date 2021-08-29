@@ -22,6 +22,24 @@ public class KafkaAdminConfig {
 
     @Value("${kafka.topic.transaction.reply.name}")
     private String replyTransactionTopicName;
+    
+    @Value("${kafka.topic.transaction.completed.name}")
+    private String completedTransactionTopicName;
+    
+    @Value("${kafka.topic.transaction.failed.name}")
+    private String failedTransactionTopicName;
+    
+    @Value("${kafka.topic.fees.request.name}")
+    private String requestFeesTopicName;
+
+    @Value("${kafka.topic.fees.reply.name}")
+    private String replyFeesTopicName;
+    
+    @Value("${kafka.topic.fees.completed.name}")
+    private String completedFeesTopicName;
+    
+    @Value("${kafka.topic.fees.failed.name}")
+    private String failedFeesTopicName;
 
     @Value("${kafka.topic.transaction.partitions-num}")
     private Integer topicsPartitions;
@@ -51,12 +69,44 @@ public class KafkaAdminConfig {
         return new NewTopic(requestTransactionTopicName, topicsPartitions, replicationFactor);
     }
 
+    @Bean
+    NewTopic completedTransactionsTopic() {
+        return new NewTopic(completedTransactionTopicName, topicsPartitions, replicationFactor);
+    }
+    
+    @Bean
+    NewTopic failedTransactionsTopic() {
+        return new NewTopic(failedTransactionTopicName, topicsPartitions, replicationFactor);
+    }
+    
     /*@Bean
     NewTopic replyTransactionsTopic() {
         Map<String, String> configs = new HashMap<>();
         // configs.put("retention.ms", replyTimeout.toString());
         return new NewTopic(replyTransactionTopicName, topicsPartitions, replicationFactor).configs(configs);
     }*/
+    
+    @Bean
+    NewTopic requestFeesTopic() {
+        return new NewTopic(requestFeesTopicName, topicsPartitions, replicationFactor);
+    }
+
+    @Bean
+    NewTopic replyFeesTopic() {
+        Map<String, String> configs = new HashMap<>();
+        configs.put("retention.ms", replyTimeout.toString());
+        return new NewTopic(replyFeesTopicName, topicsPartitions, replicationFactor).configs(configs);
+    }
+
+    @Bean
+    NewTopic completedFeesTopic() {
+        return new NewTopic(completedFeesTopicName, topicsPartitions, replicationFactor);
+    }
+    
+    @Bean
+    NewTopic failedFeesTopic() {
+        return new NewTopic(failedFeesTopicName, topicsPartitions, replicationFactor);
+    }
 
     @Bean
     public KafkaAdmin admin() {
