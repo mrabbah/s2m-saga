@@ -10,7 +10,7 @@
     </parent>
     <groupId>ma.net.s2m.kafka.template</groupId>
     <artifactId>feign-server-microservice</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>2.0</version>
     <name>feign-server-microservice</name>
     <description>Feign Avro Server Microservice</description>
     <properties>

@@ -10,7 +10,7 @@
     </parent>
     <groupId>ma.net.s2m.kafka.template</groupId>
     <artifactId>transaction-microservice</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>2.0</version>
     <name>transaction-microservice</name>
     <description>Transaction Microservice Template For Kafka</description>
     <properties>

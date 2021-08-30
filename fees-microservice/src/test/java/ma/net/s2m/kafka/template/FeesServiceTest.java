@@ -5,6 +5,7 @@ import ma.net.s2m.kafka.template.clients.FeesCurrencyConverterClient;
 import ma.net.s2m.kafka.template.example.dto.FeeResponse;
 import ma.net.s2m.kafka.template.service.FeesService;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class FeesServiceTest {
     @Autowired
     FeesCurrencyConverterClient feesCurrencyConverterClient;
     
+    @Ignore
     @Test
     public void testConvertionFeignAvro() {
         FeeResponse feeMAD = new FeeResponse(1l, "TTTTTTT", 89d);
