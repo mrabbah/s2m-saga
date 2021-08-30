@@ -57,14 +57,14 @@ public class KafkaAdminConfig {
 
     @Bean
     NewTopic requestTransactionsTopic() {
-        return new NewTopic(requestTransactionTopicName, topicsPartitions, replicationFactor);
+        Map<String, String> configs = new HashMap<>();
+        configs.put("retention.ms", replyTimeout.toString());
+        return new NewTopic(requestTransactionTopicName, topicsPartitions, replicationFactor).configs(configs);
     }
 
     @Bean
     NewTopic replyTransactionsTopic() {
-        Map<String, String> configs = new HashMap<>();
-        configs.put("retention.ms", replyTimeout.toString());
-        return new NewTopic(replyTransactionTopicName, topicsPartitions, replicationFactor).configs(configs);
+        return new NewTopic(replyTransactionTopicName, topicsPartitions, replicationFactor);
     }
 
     @Bean

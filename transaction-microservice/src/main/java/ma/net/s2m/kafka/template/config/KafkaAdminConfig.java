@@ -66,7 +66,9 @@ public class KafkaAdminConfig {
     
     @Bean
     NewTopic requestTransactionsTopic() {
-        return new NewTopic(requestTransactionTopicName, topicsPartitions, replicationFactor);
+        Map<String, String> configs = new HashMap<>();
+        configs.put("retention.ms", replyTimeout.toString());
+        return new NewTopic(requestTransactionTopicName, topicsPartitions, replicationFactor).configs(configs);
     }
 
     @Bean
@@ -88,7 +90,9 @@ public class KafkaAdminConfig {
     
     @Bean
     NewTopic requestFeesTopic() {
-        return new NewTopic(requestFeesTopicName, topicsPartitions, replicationFactor);
+        Map<String, String> configs = new HashMap<>();
+        configs.put("retention.ms", replyTimeout.toString());
+        return new NewTopic(requestFeesTopicName, topicsPartitions, replicationFactor).configs(configs);
     }
 
     @Bean

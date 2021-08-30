@@ -47,7 +47,7 @@ kafka:
     additionalconfig: ${ADDITIONAL_CONFIG:#{null}}
     topic:
         transaction:
-            partitions-num: 1
+            partitions-num: 2
             replication-factor: 1
             request: 
                 name: tx.request

@@ -18,7 +18,6 @@ import reactor.core.publisher.Mono;
         configuration = FeignConfig.class)
 public interface FeesCurrencyConverterClient {
     
-    // @Headers("Content-Type: application/x-www-form-urlencoded")
     @RequestMapping(method = RequestMethod.PUT, value = "/convert", produces = AVRO_JSON, consumes = AVRO_JSON)
     FeeResponse convert(FeeResponse feesMAD); 
 }
