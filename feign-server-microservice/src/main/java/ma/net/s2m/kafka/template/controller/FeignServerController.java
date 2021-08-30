@@ -38,7 +38,7 @@ public class FeignServerController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, response = FeeResponse.class, message = "Successful operation")})
     @PutMapping(value = "/convert", produces = AVRO_JSON, consumes = AVRO_JSON)
-    public Mono<FeeResponse> handel(@RequestBody final FeeResponse fees) {
+    public FeeResponse convert(@RequestBody final FeeResponse fees) {
         
         log.info("Fees input : " + fees.toString());
         
@@ -47,7 +47,7 @@ public class FeignServerController {
                 .setTransactionUuid(fees.getTransactionUuid())
                 .setFees(fees.getFees() / 8.9).build();
         
-        return Mono.just(response);
+        return response;
         
     }
 

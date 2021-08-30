@@ -61,6 +61,18 @@ kafka:
                 
     request-reply:
         timeout-ms: 5000
+        
+feign:
+    name: currencyConverter
+    url: http://localhost:9111
+    path: /api
+    client:
+        config:
+            default:
+                connectTimeout: 5000
+                readTimeout: 5000
+                loggerLevel: basic
+
 logging:
     level:
         root: info
